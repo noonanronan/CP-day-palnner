@@ -45,7 +45,7 @@ const CreateWorker = () => {
         }
     };
 
-    // "Add a predefined shift time as a new availability entry"
+    // Add a predefined shift time as a new availability entry
     const handleAddPredefinedTime = (time) => {
         setAvailability((prev) => [
             ...prev,
@@ -64,7 +64,7 @@ const CreateWorker = () => {
         try {
             const timeZone = "Europe/Dublin";
 
-            // "Convert local times to UTC before sending to the API"
+            // Convert local times to UTC before sending to the API
             const adjustedAvailability = availability.map(({ start, end, late }) => ({
                 start: fromZonedTime(start, timeZone).toISOString(),
                 end: fromZonedTime(end, timeZone).toISOString(),

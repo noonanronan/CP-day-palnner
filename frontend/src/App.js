@@ -11,7 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 const Navbar = () => {
     const location = useLocation();
 
-    // "Hide the navbar on the login page"
+    // Hide the navbar on the login page
     if (location.pathname === "/") return null;
 
     return (

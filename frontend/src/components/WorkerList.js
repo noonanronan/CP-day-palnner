@@ -29,14 +29,14 @@ const WorkerList = () => {
     const [availabilityUploadSuccess, setAvailabilityUploadSuccess] = useState(null);
     const navigate = useNavigate();
 
-    // "Fetch workers and templates on mount"
+    // Fetch workers and templates on mount
     useEffect(() => {
         const fetchWorkers = async () => {
             try {
                 const data = await getAllWorkers();
                 const now = new Date();
 
-                // "Strip out any availability that has already ended"
+                // Strip out any availability that has already ended
                 const cleanedWorkers = data.workers.map((worker) => {
                     const filteredAvailability = worker.availability
                         .map(({ start, end, late }) => ({ start, end, late: !!late }))
@@ -86,7 +86,7 @@ const WorkerList = () => {
                 print_until_hour: printUntilHour,
             });
 
-            // "Trigger file download in the browser"
+            // Trigger file download in the browser
             const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
@@ -159,7 +159,7 @@ const WorkerList = () => {
         }
     };
 
-    // "Returns the first upcoming availability date for a worker"
+    // Returns the first upcoming availability date for a worker
     const getNextAvailability = (availability) => {
         const now = new Date();
         const nextDates = availability
@@ -172,7 +172,7 @@ const WorkerList = () => {
         return nextDates.length > 0 ? nextDates[0] : null;
     };
 
-    // "Returns today's availability range if the worker is in today"
+    // Returns today's availability range if the worker is in today
     const getTodayAvailability = (availability) => {
         const today = new Date();
         today.setHours(0, 0, 0, 0);
@@ -194,14 +194,14 @@ const WorkerList = () => {
         });
     };
 
-    // "Returns today, future, or none based on worker availability"
+    // Returns today, future, or none based on worker availability
     const getAvailabilityStatus = (availability) => {
         if (getTodayAvailability(availability)) return "today";
         if (hasFutureAvailability(availability)) return "future";
         return "none";
     };
 
-    // "Sort: workers in today first, then by next availability date, then no availability"
+    // Sort: workers in today first, then by next availability date, then no availability
     const sortedWorkers = [...workers].sort((a, b) => {
         const aToday = getTodayAvailability(a.availability);
         const bToday = getTodayAvailability(b.availability);
