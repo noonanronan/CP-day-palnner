@@ -1,64 +1,166 @@
+/* ============================================================
+   Login Page — Modern Full-Screen Design
+   ============================================================ */
+
 html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
 }
 
 .login-container {
-  display: flex;          
-  justify-content: center;
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  display: flex;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(to bottom right, #006421, #06aa00, #34df00);
+  justify-content: center;
+  background: linear-gradient(135deg, #0f172a 0%, #1a2f5e 45%, #0f172a 100%);
+  overflow: hidden;
 }
 
-.login-box {
-  background: white;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  width: 280px;
-  height: 220px;
+/* Background glow blobs */
+.login-container::before {
+  content: '';
+  position: absolute;
+  width: 700px;
+  height: 700px;
+  background: radial-gradient(circle, rgba(37, 99, 235, 0.18) 0%, transparent 65%);
+  top: -200px;
+  right: -100px;
+  pointer-events: none;
+}
+
+.login-container::after {
+  content: '';
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(8, 145, 178, 0.12) 0%, transparent 65%);
+  bottom: -100px;
+  left: -80px;
+  pointer-events: none;
+}
+
+/* ── Login card ─────────────────────────────────────────────── */
+.login-container form {
+  position: relative;
+  z-index: 1;
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 2.75rem 2.25rem 2.25rem;
+  width: 360px;
+  box-shadow:
+    0 30px 70px rgba(0, 0, 0, 0.45),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
-.login-box h2 {
-  margin-bottom: 12px;
-  font-size: 20px;
+/* Brand label */
+.login-brand {
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #2563eb;
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
-.login-box input {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 12px;
-  border: 1px solid #ccc;
+.login-brand::before {
+  content: '';
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background: linear-gradient(135deg, #2563eb 0%, #60a5fa 100%);
   border-radius: 6px;
-  font-size: 14px;
+  flex-shrink: 0;
 }
 
-.login-box button {
+/* Heading */
+.login-container h2 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.6px;
+}
+
+/* Subtitle */
+.login-subtitle {
+  font-size: 0.875rem;
+  color: #64748b;
+  margin-bottom: 1.75rem;
+}
+
+/* Label */
+.login-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 0.4rem;
+}
+
+/* Input */
+.login-container input[type='password'] {
   width: 100%;
-  padding: 10px;
-  background-color: #28a745;
-  border: none;
-  border-radius: 6px;
-  color: white;
-  font-weight: bold;
-  font-size: 14px;
-  cursor: pointer;
-  transition: 0.3s ease;
+  padding: 0.72rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #1e293b;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  box-sizing: border-box;
+  letter-spacing: 0.5px;
+  font-family: inherit;
 }
 
-.login-box button:hover {
-  background-color: #218838;
+.login-container input[type='password']:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: #ffffff;
 }
 
+/* Error message */
 .error {
-  color: red;
-  margin-top: 8px;
-  font-size: 13px;
+  color: #dc2626;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin: 0.5rem 0 0;
+}
+
+/* Submit button */
+.login-container button[type='submit'] {
+  width: 100%;
+  margin-top: 1.25rem;
+  padding: 0.78rem;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.3px;
+  font-family: inherit;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+}
+
+.login-container button[type='submit']:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.45);
+}
+
+.login-container button[type='submit']:active {
+  transform: translateY(0);
 }

@@ -1,5 +1,6 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate, Link } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
+import './App.css';
 
 import LoginPage from './components/LoginPage';
 import WorkerList from "./components/WorkerList";

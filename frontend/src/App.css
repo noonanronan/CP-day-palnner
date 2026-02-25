@@ -1,38 +1,614 @@
-.App {
-  text-align: center;
+/* ============================================================
+   Day Planner — Global Design System
+   ============================================================ */
+
+/* ── Google Fonts ───────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ── CSS Variables ──────────────────────────────────────────── */
+:root {
+  --navy:          #0f172a;
+  --navy-mid:      #1e293b;
+  --navy-light:    #334155;
+  --blue:          #2563eb;
+  --blue-hover:    #1d4ed8;
+  --blue-light:    #eff6ff;
+  --green:         #059669;
+  --green-light:   #ecfdf5;
+  --amber:         #d97706;
+  --amber-light:   #fffbeb;
+  --red:           #dc2626;
+  --red-light:     #fef2f2;
+  --page-bg:       #f1f5f9;
+  --card-bg:       #ffffff;
+  --text-dark:     #0f172a;
+  --text-body:     #1e293b;
+  --text-muted:    #64748b;
+  --text-light:    #94a3b8;
+  --border:        #e2e8f0;
+  --shadow-sm:     0 2px 8px rgba(0,0,0,0.07);
+  --shadow-md:     0 6px 24px rgba(0,0,0,0.11);
+  --shadow-lg:     0 12px 40px rgba(0,0,0,0.15);
+  --radius-sm:     8px;
+  --radius:        12px;
+  --radius-lg:     16px;
+  --transition:    0.2s ease;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* ── Base ───────────────────────────────────────────────────── */
+body {
+  background: var(--page-bg);
+  color: var(--text-body);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* ── Navbar ─────────────────────────────────────────────────── */
+.navbar {
+  background: var(--navy) !important;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
+  padding: 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.navbar-brand {
+  color: #ffffff !important;
+  font-weight: 800;
+  font-size: 1.15rem;
+  letter-spacing: -0.4px;
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.navbar-brand::before {
+  content: '';
+  display: inline-block;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(135deg, var(--blue) 0%, #60a5fa 100%);
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.65) !important;
+  font-weight: 500;
+  font-size: 0.9rem;
+  transition: color var(--transition), background var(--transition);
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+}
+
+.navbar .nav-link:hover {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.navbar .btn-outline-danger {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.38rem 1rem;
+  border-radius: 20px;
+  transition: all var(--transition);
+  letter-spacing: 0.2px;
+}
+
+.navbar .btn-outline-danger:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ── Page Layout ────────────────────────────────────────────── */
+.container.mt-4 {
+  max-width: 1400px;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+h1 {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: var(--text-dark);
+  letter-spacing: -0.5px;
+}
+
+h5 {
+  font-weight: 700;
+  color: var(--text-dark);
+  font-size: 0.95rem;
+}
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow-sm);
+}
+
+/* Panel cards (controls, upload sections) */
+.card.p-3 {
+  border-radius: var(--radius-lg) !important;
+  padding: 1.5rem !important;
+}
+
+/* ── Panel headers (inside control cards) ───────────────────── */
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-header h5 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.panel-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.panel-icon.blue  { background: var(--blue-light); color: var(--blue); }
+.panel-icon.green { background: var(--green-light); color: var(--green); }
+.panel-icon.amber { background: var(--amber-light); color: var(--amber); }
+
+/* ── Form controls ──────────────────────────────────────────── */
+.form-control,
+.form-select {
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm) !important;
+  padding: 0.55rem 0.85rem;
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--text-body);
+  background: #fafbfc;
+  transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  background: var(--card-bg);
+  outline: none;
+  color: var(--text-dark);
+}
+
+.form-label {
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem;
+}
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn {
+  font-weight: 600;
+  font-family: inherit;
+  border-radius: var(--radius-sm) !important;
+  transition: all var(--transition);
+  font-size: 0.875rem;
+  letter-spacing: 0.1px;
+}
+
+.btn-primary {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:hover {
+  background: var(--blue-hover) !important;
+  border-color: var(--blue-hover) !important;
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-success {
+  background: var(--green) !important;
+  border-color: var(--green) !important;
+  color: #fff !important;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.2);
+}
+
+.btn-success:hover {
+  background: #047857 !important;
+  border-color: #047857 !important;
+  box-shadow: 0 6px 16px rgba(5, 150, 105, 0.35);
+  transform: translateY(-1px);
+}
+
+.btn-danger {
+  background: var(--red) !important;
+  border-color: var(--red) !important;
+  color: #fff !important;
+}
+
+.btn-danger:hover {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-outline-primary {
+  border-color: #bfdbfe !important;
+  color: var(--blue) !important;
+  background: var(--blue-light) !important;
+}
+
+.btn-outline-primary:hover {
+  background: var(--blue) !important;
+  border-color: var(--blue) !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.btn-outline-secondary {
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+  font-size: 0.82rem;
+}
+
+.btn-outline-secondary:hover {
+  background: var(--navy-mid) !important;
+  border-color: var(--navy-mid) !important;
+  color: #fff !important;
+}
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge {
+  font-weight: 600;
+  font-size: 0.7rem;
+  padding: 0.3em 0.7em;
+  border-radius: 20px !important;
+  letter-spacing: 0.3px;
+  vertical-align: middle;
+}
+
+.bg-success {
+  background: var(--green) !important;
+}
+
+.bg-warning {
+  background: var(--amber) !important;
+}
+
+.bg-secondary {
+  background: #94a3b8 !important;
+}
+
+/* ── Page header row ────────────────────────────────────────── */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ── Search bar ─────────────────────────────────────────────── */
+.search-wrapper {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.search-wrapper .form-control {
+  padding-left: 2.75rem;
+  border-radius: 25px !important;
+  font-size: 0.9rem;
+  height: 44px;
+  background: var(--card-bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light);
+  pointer-events: none;
+  font-size: 0.95rem;
+  z-index: 1;
+}
+
+/* ── Worker Cards Grid ──────────────────────────────────────── */
+
+/* Remove Bootstrap border from col wrapper */
+.worker-grid > [class*="col-"] {
+  border: none !important;
+}
+
+/* Status left border on inner card */
+.worker-grid > .border-success .card {
+  border-left: 4px solid var(--green) !important;
+  background: linear-gradient(105deg, #f0fdf8 0%, #ffffff 55%) !important;
+}
+
+.worker-grid > .border-warning .card {
+  border-left: 4px solid var(--amber) !important;
+  background: linear-gradient(105deg, #fffcf0 0%, #ffffff 55%) !important;
+}
+
+.worker-grid > .border-secondary .card {
+  border-left: 4px solid #cbd5e1 !important;
+}
+
+/* Card hover effect */
+.worker-grid .card {
+  transition: box-shadow var(--transition), transform var(--transition);
+  cursor: default;
+}
+
+.worker-grid .card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-3px);
+}
+
+/* Card body */
+.worker-grid .card-body {
+  padding: 1rem 1.1rem !important;
+}
+
+/* Worker name */
+.worker-grid .card-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem !important;
+  line-height: 1.3;
+}
+
+/* Worker details text */
+.worker-grid .card-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.4rem !important;
+  line-height: 1.5;
+}
+
+.worker-grid .card-text strong {
+  color: var(--text-body);
+  font-weight: 600;
+}
+
+/* Role tags */
+.role-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.5rem;
+}
+
+.role-tag {
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.18em 0.55em;
+  border-radius: 5px;
+  background: #f1f5f9;
+  color: var(--navy-light);
+  border: 1px solid var(--border);
+  letter-spacing: 0.3px;
+}
+
+/* Availability text */
+.avail-text {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 0.7rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.avail-text::before {
+  content: '🕐';
+  font-size: 0.75rem;
+}
+
+/* Worker action buttons */
+.worker-grid .btn-sm {
+  font-size: 0.77rem;
+  padding: 0.28rem 0.7rem;
+  border-radius: 7px !important;
+}
+
+/* ── File input ─────────────────────────────────────────────── */
+.form-control[type='file'] {
+  cursor: pointer;
+  padding: 0.45rem 0.75rem;
+}
+
+.form-control[type='file']::file-selector-button {
+  background: var(--navy-mid);
   color: white;
+  border: none;
+  padding: 0.38rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  margin-right: 0.75rem;
+  transition: background var(--transition);
 }
 
-.App-link {
-  color: #61dafb;
+.form-control[type='file']::file-selector-button:hover {
+  background: var(--blue);
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* ── Quick time picker buttons ──────────────────────────────── */
+.quick-times {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.quick-times .btn {
+  font-size: 0.77rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 20px !important;
+}
+
+/* ── Availability row (DatePickers) ─────────────────────────── */
+.availability-row {
+  background: #f8fafc;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.6rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+/* ── Checkboxes ─────────────────────────────────────────────── */
+.form-check-input {
+  border: 2px solid var(--border);
+  border-radius: 5px !important;
+  width: 1.1em;
+  height: 1.1em;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.form-check-input:checked {
+  background-color: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.form-check-label {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text-body);
+  cursor: pointer;
+}
+
+/* ── Role checkboxes ────────────────────────────────────────── */
+.role-check-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.role-check-item {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f8fafc;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.role-check-item:has(.form-check-input:checked) {
+  border-color: var(--blue);
+  background: var(--blue-light);
+}
+
+.role-check-item .form-check-input {
+  margin: 0;
+}
+
+.role-check-item .form-check-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+/* ── Messages ───────────────────────────────────────────────── */
+.text-success {
+  color: var(--green) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.text-danger {
+  color: var(--red) !important;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* ── React DatePicker overrides ─────────────────────────────── */
+.react-datepicker-wrapper {
+  flex: 1;
+  min-width: 160px;
+}
+
+.react-datepicker-wrapper .form-control {
+  width: 100%;
+}
+
+.react-datepicker__header {
+  background: var(--navy-mid) !important;
+  border-bottom: none !important;
+}
+
+.react-datepicker__current-month,
+.react-datepicker__day-name,
+.react-datepicker-time__header {
+  color: white !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background: var(--blue) !important;
+  border-radius: 6px !important;
+}
+
+.react-datepicker__day:hover {
+  border-radius: 6px !important;
+}
+
+/* ── Responsive tweaks ──────────────────────────────────────── */
+@media (max-width: 576px) {
+  h1 { font-size: 1.35rem; }
+
+  .card.p-3 {
+    padding: 1rem !important;
   }
-  to {
-    transform: rotate(360deg);
+
+  .availability-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .react-datepicker-wrapper {
+    min-width: unset;
+    width: 100%;
   }
 }

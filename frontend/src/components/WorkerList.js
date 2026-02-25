@@ -259,24 +259,26 @@ const WorkerList = () => {
     return (
         <div className="container mt-4">
             {/* Page Header */}
-            <div className="d-flex justify-content-between align-items-center mb-3">
-            
+            <div className="page-header">
                 <h1 className="mb-0">Instructor List</h1>
                 <button
                     className="btn btn-outline-secondary btn-sm"
                     onClick={() => setShowUploadSection(!showUploadSection)}
                 >
-                    {showUploadSection ? "Hide Template Upload" : "Show Template Upload"}
+                    {showUploadSection ? "Hide Template Upload" : "⬆ Upload Template"}
                 </button>
             </div>
 
             {/* Upload Template Section */}
             {showUploadSection && (
                 <div className="card p-3 mb-4">
-                    <h5 className="mb-3">Upload Template</h5>
+                    <div className="panel-header">
+                        <span className="panel-icon amber">📄</span>
+                        <h5>Upload Schedule Template</h5>
+                    </div>
                     <input
                         type="file"
-                        className="form-control mb-2"
+                        className="form-control mb-3"
                         accept=".xlsx,.ods"
                         onChange={handleFileChange}
                     />
@@ -289,9 +291,13 @@ const WorkerList = () => {
 
             {/* Controls for Date & Template Selection */}
             <div className="card p-3 mb-4">
-                <div className="row g-3 align-items-center">
+                <div className="panel-header">
+                    <span className="panel-icon green">📅</span>
+                    <h5>Generate Schedule</h5>
+                </div>
+                <div className="row g-3 align-items-end">
                     <div className="col-md-4">
-                        <label className="form-label">Select Date:</label>
+                        <label className="form-label">Date</label>
                         <input
                             type="date"
                             className="form-control"
@@ -299,14 +305,14 @@ const WorkerList = () => {
                             onChange={(e) => setSelectedDate(e.target.value)}
                         />
                     </div>
-                    <div className="col-md-6">
-                        <label className="form-label">Select Template:</label>
+                    <div className="col-md-4">
+                        <label className="form-label">Template</label>
                         <select
                             className="form-select"
                             value={selectedTemplate}
                             onChange={(e) => setSelectedTemplate(e.target.value)}
                         >
-                            <option value="">-- Choose Template --</option>
+                            <option value="">— Choose Template —</option>
                             {templates.map((template, index) => (
                                 <option key={index} value={template}>
                                     {template}
@@ -314,8 +320,8 @@ const WorkerList = () => {
                             ))}
                         </select>
                     </div>
-                    <div className="col-md-3">
-                        <label className="form-label">Morning ICA Count:</label>
+                    <div className="col-md-2 col-6">
+                        <label className="form-label">Morning ICA</label>
                         <input
                             type="number"
                             className="form-control"
@@ -324,9 +330,9 @@ const WorkerList = () => {
                             max={4}
                             onChange={(e) => setMorningIcaCount(e.target.value)}
                         />
-                        </div>
-                        <div className="col-md-3">
-                        <label className="form-label">Afternoon ICA Count:</label>
+                    </div>
+                    <div className="col-md-2 col-6">
+                        <label className="form-label">Afternoon ICA</label>
                         <input
                             type="number"
                             className="form-control"
@@ -335,37 +341,41 @@ const WorkerList = () => {
                             max={4}
                             onChange={(e) => setAfternoonIcaCount(e.target.value)}
                         />
-                        </div>
-                        <div className="col-md-3">
-                            <label className="form-label">Stop Printing At:</label>
-                            <select
-                                className="form-select"
-                                value={printUntilHour}
-                                onChange={(e) => setPrintUntilHour(Number(e.target.value))}
-                            >
-                                <option value={16}>4:00 PM</option>
-                                <option value={17}>5:00 PM</option>
-                                <option value={18}>6:00 PM</option>
-                            </select>
-                        </div>
-                    <div className="col-md-2 d-grid">
-                        <button className="btn btn-success mt-4" onClick={handleDownloadSchedule}>
-                            Generate Schedule
+                    </div>
+                    <div className="col-md-3 col-6">
+                        <label className="form-label">Stop Printing At</label>
+                        <select
+                            className="form-select"
+                            value={printUntilHour}
+                            onChange={(e) => setPrintUntilHour(Number(e.target.value))}
+                        >
+                            <option value={16}>4:00 PM</option>
+                            <option value={17}>5:00 PM</option>
+                            <option value={18}>6:00 PM</option>
+                        </select>
+                    </div>
+                    <div className="col-md-2 col-6 d-grid">
+                        <button className="btn btn-success" onClick={handleDownloadSchedule}>
+                            ⬇ Generate
                         </button>
                     </div>
                 </div>
             </div>
 
+            {/* Upload Availability */}
             <div className="card p-3 mb-4">
-                <h5 className="mb-3">Upload Worker Availability</h5>
+                <div className="panel-header">
+                    <span className="panel-icon blue">📊</span>
+                    <h5>Upload Worker Availability</h5>
+                </div>
                 <input
                     type="file"
-                    className="form-control mb-2"
+                    className="form-control mb-3"
                     accept=".xlsx"
                     onChange={handleAvailabilityFileChange}
                 />
                 <button className="btn btn-primary" onClick={handleUploadAvailability}>
-                    Upload Availability File
+                    Upload Availability
                 </button>
                 {availabilityUploadSuccess && (
                     <p className="text-success mt-2">{availabilityUploadSuccess}</p>
@@ -375,9 +385,9 @@ const WorkerList = () => {
                 )}
             </div>
 
-            
             {/* Search Bar */}
-            <div className="mb-3">
+            <div className="search-wrapper">
+                <span className="search-icon">🔍</span>
                 <input
                     type="text"
                     className="form-control"
@@ -387,8 +397,8 @@ const WorkerList = () => {
                 />
             </div>
 
-             {/* Worker Cards */}
-             <div className="row g-2">
+            {/* Worker Cards */}
+            <div className="row g-3 worker-grid">
                 {sortedWorkers
                     .filter((worker) => worker.name.toLowerCase().includes(searchQuery.toLowerCase()))
                     .map((worker) => {
@@ -399,38 +409,40 @@ const WorkerList = () => {
 
                         if (todayRange) {
                             borderClass = "border border-success";
-                            statusBadge = <span className="badge bg-success ms-2">In Today</span>;
+                            statusBadge = <span className="badge bg-success">In Today</span>;
                         } else if (getNextAvailability(worker.availability)) {
                             borderClass = "border border-warning";
-                            statusBadge = <span className="badge bg-warning text-dark ms-2">Available Soon</span>;
+                            statusBadge = <span className="badge bg-warning text-dark">Available Soon</span>;
                         } else {
                             borderClass = "border border-secondary";
-                            statusBadge = <span className="badge bg-secondary ms-2">No Availability</span>;
+                            statusBadge = <span className="badge bg-secondary">No Availability</span>;
                         }
 
+                        const availStatus = getAvailabilityStatus(worker.availability);
 
                         return (
                             <div className={`col-12 col-sm-6 col-md-4 col-lg-3 ${borderClass}`} key={worker.id}>
-                                <div className="card h-100 shadow-sm">
-                                    <div className="card-body p-2">
-                                        <h6 className="card-title mb-2">
-                                            {worker.name} {statusBadge}
+                                <div className="card h-100">
+                                    <div className="card-body">
+                                        <h6 className="card-title">
+                                            {worker.name}
+                                            {statusBadge}
                                         </h6>
-                                        <p className="card-text mb-2">
-                                            <strong>Roles:</strong> {worker.roles.join(", ")}
-                                        </p>
-                                        <p className="card-text mb-2">
-                                        <strong>Availability:</strong> 
-                                        {getAvailabilityStatus(worker.availability) === "today" && todayRange
-                                            ? `${formatInTimeZone(todayRange.start, 'Europe/Dublin', "hh:mm a")} - ${formatInTimeZone(todayRange.end, 'Europe/Dublin', "hh:mm a")}`
-                                            : getAvailabilityStatus(worker.availability) === "future"
-                                            ? `Next: ${formatInTimeZone(getNextAvailability(worker.availability), 'Europe/Dublin', "MMM dd, yyyy HH:mm")}`
-                                            : "No upcoming availability"}
-
+                                        <div className="role-tags mb-2">
+                                            {worker.roles.map((role) => (
+                                                <span key={role} className="role-tag">{role}</span>
+                                            ))}
+                                        </div>
+                                        <p className="avail-text">
+                                            {availStatus === "today" && todayRange
+                                                ? `${formatInTimeZone(todayRange.start, 'Europe/Dublin', "hh:mm a")} – ${formatInTimeZone(todayRange.end, 'Europe/Dublin', "hh:mm a")}`
+                                                : availStatus === "future"
+                                                ? `Next: ${formatInTimeZone(getNextAvailability(worker.availability), 'Europe/Dublin', "MMM dd, yyyy")}`
+                                                : "No upcoming availability"}
                                         </p>
                                         <div className="d-flex justify-content-between">
                                             <button className="btn btn-primary btn-sm" onClick={() => navigate(`/update-worker/${worker.id}`)}>
-                                                Update
+                                                Edit
                                             </button>
                                             <button className="btn btn-danger btn-sm" onClick={() => handleDelete(worker.id)}>
                                                 Delete

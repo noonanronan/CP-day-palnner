@@ -129,118 +129,123 @@ const UpdateWorker = () => {
 
     return (
         <div className="container mt-4">
-            <h1 className="text-center mb-4">Update Worker</h1>
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">Name</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label className="form-label">Roles</label>
-                    <div className="d-flex flex-wrap gap-3">
-                        {predefinedRoles.map((role) => (
-                        <div className="form-check" key={role}>
-                            <input
-                            className="form-check-input"
-                            type="checkbox"
-                            id={role}
-                            checked={selectedRoles.includes(role)}
-                            onChange={() => handleRoleChange(role)}
-                            />
-                            <label className="form-check-label" htmlFor={role}>
-                            {role}
-                            </label>
-                        </div>
-                        ))}
+            <h1 className="mb-4">Update Instructor</h1>
+            <div className="card p-3">
+                <form onSubmit={handleSubmit}>
+                    <div className="mb-4">
+                        <label className="form-label">Full Name</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                            placeholder="Enter instructor name"
+                            required
+                        />
                     </div>
-                    </div>
-                <div className="mb-3">
-                <h5 className="mb-3 mt-4">Quick Availability Pickers</h5>
-                    <div className="mb-2">
-                        {predefinedTimes.map((time, index) => (
-                            <button
-                                key={index}
-                                type="button"
-                                className="btn btn-outline-primary btn-sm me-2"
-                                onClick={() => handleAddPredefinedTime(time)}
-                            >
-                                {time.label}
-                            </button>
-                        ))}
-                    </div>
-                    <h5 className="mb-3 mt-4">Manual Availability</h5>
-                    {availability.map((range, index) => (
-                        <div key={index} className="card p-3 mb-2 d-flex flex-row align-items-center gap-2">
-                            <DatePicker
-                                selected={range.start}
-                                onChange={(date) => handleDateChange(index, "start", date)}
-                                selectsStart
-                                startDate={range.start}
-                                endDate={range.end}
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={30}
-                                timeCaption="Time"
-                                dateFormat="Pp"
-                                placeholderText="Start Time"
-                                className="form-control"
-                            />
-                            <DatePicker
-                                selected={range.end}
-                                onChange={(date) => handleDateChange(index, "end", date)}
-                                selectsEnd
-                                startDate={range.start}
-                                endDate={range.end}
-                                showTimeSelect
-                                timeFormat="HH:mm"
-                                timeIntervals={30}
-                                timeCaption="Time"
-                                dateFormat="Pp"
-                                placeholderText="End Time"
-                                className="form-control"
-                            />
-                            <div className="form-check ms-2">
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    id={`late-${index}`}
-                                    checked={range.late}
-                                    onChange={(e) => {
-                                        const updated = [...availability];
-                                        updated[index].late = e.target.checked;
-                                        setAvailability(updated);
-                                    }}
-                                />
-                                <label className="form-check-label" htmlFor={`late-${index}`}>
-                                    Late Shift
+                    <div className="mb-4">
+                        <label className="form-label">Roles</label>
+                        <div className="role-check-group">
+                            {predefinedRoles.map((role) => (
+                                <label className="role-check-item" key={role}>
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={role}
+                                        checked={selectedRoles.includes(role)}
+                                        onChange={() => handleRoleChange(role)}
+                                    />
+                                    <span className="form-check-label">{role}</span>
                                 </label>
-                            </div>
-                            <button
-                                type="button"
-                                className="btn btn-danger btn-sm"
-                                onClick={() => handleRemoveAvailability(index)}
-                            >
-                                Remove
-                            </button>
+                            ))}
                         </div>
-                    ))}
+                    </div>
 
-                    <button
-                        type="button"
-                        className="btn btn-outline-secondary btn-sm mt-2"
-                        onClick={handleAddAvailability}
-                    >
-                        Add Custom Time
-                    </button>
-                </div>
-                <button type="submit" className="btn btn-primary">Update</button>
-            </form>
+                    <div className="mb-4">
+                        <label className="form-label">Quick Availability</label>
+                        <div className="quick-times">
+                            {predefinedTimes.map((time, index) => (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    className="btn btn-outline-primary btn-sm"
+                                    onClick={() => handleAddPredefinedTime(time)}
+                                >
+                                    {time.label}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="form-label">Manual Availability</label>
+                        {availability.map((range, index) => (
+                            <div key={index} className="availability-row">
+                                <DatePicker
+                                    selected={range.start}
+                                    onChange={(date) => handleDateChange(index, "start", date)}
+                                    selectsStart
+                                    startDate={range.start}
+                                    endDate={range.end}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={30}
+                                    timeCaption="Time"
+                                    dateFormat="Pp"
+                                    placeholderText="Start Time"
+                                    className="form-control"
+                                />
+                                <DatePicker
+                                    selected={range.end}
+                                    onChange={(date) => handleDateChange(index, "end", date)}
+                                    selectsEnd
+                                    startDate={range.start}
+                                    endDate={range.end}
+                                    showTimeSelect
+                                    timeFormat="HH:mm"
+                                    timeIntervals={30}
+                                    timeCaption="Time"
+                                    dateFormat="Pp"
+                                    placeholderText="End Time"
+                                    className="form-control"
+                                />
+                                <div className="form-check">
+                                    <input
+                                        className="form-check-input"
+                                        type="checkbox"
+                                        id={`late-${index}`}
+                                        checked={range.late}
+                                        onChange={(e) => {
+                                            const updated = [...availability];
+                                            updated[index].late = e.target.checked;
+                                            setAvailability(updated);
+                                        }}
+                                    />
+                                    <label className="form-check-label" htmlFor={`late-${index}`}>
+                                        Late Shift
+                                    </label>
+                                </div>
+                                <button
+                                    type="button"
+                                    className="btn btn-danger btn-sm"
+                                    onClick={() => handleRemoveAvailability(index)}
+                                >
+                                    Remove
+                                </button>
+                            </div>
+                        ))}
+                        <button
+                            type="button"
+                            className="btn btn-outline-secondary btn-sm mt-2"
+                            onClick={handleAddAvailability}
+                        >
+                            + Add Custom Time
+                        </button>
+                    </div>
+
+                    <button type="submit" className="btn btn-primary px-4">Save Changes</button>
+                </form>
+            </div>
         </div>
     );
 };

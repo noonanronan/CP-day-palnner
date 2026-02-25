@@ -20,16 +20,19 @@ const LoginPage = () => {
     return (
         <div className="login-container">
             <form onSubmit={handleSubmit} autoComplete="off">
-                <h2>Login</h2>
+                <div className="login-brand">Day Planner</div>
+                <h2>Welcome back</h2>
+                <p className="login-subtitle">Enter your password to access the planner</p>
+                <label className="login-label">Password</label>
                 <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter Password"
-                    autoComplete="new-password" 
+                    placeholder="Enter password"
+                    autoComplete="new-password"
                 />
                 {error && <p className="error">{error}</p>}
-                <button type="submit">*Login*</button>
+                <button type="submit">Sign In</button>
             </form>
         </div>
     );
