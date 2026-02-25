@@ -1,26 +1,18 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation, Link } from "react-router-dom";
-import './App.css';
+import "./App.css";
 
-import LoginPage from './components/LoginPage';
+import LoginPage from "./components/LoginPage";
 import WorkerList from "./components/WorkerList";
 import CreateWorker from "./components/CreateWorker";
 import UpdateWorker from "./components/UpdateWorker";
 import ProtectedRoute from "./components/ProtectedRoute";
 
-
-// 🔹 Navbar Component with Logout Button
 const Navbar = () => {
     const location = useLocation();
-    // const navigate = useNavigate();
 
-    // Hide navbar on login page
+    // "Hide the navbar on the login page"
     if (location.pathname === "/") return null;
-
-    // const handleLogout = () => {
-    //     localStorage.removeItem("isAuthenticated");
-    //     navigate("/");
-    // };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-light">
@@ -64,4 +56,3 @@ const App = () => {
 };
 
 export default App;
-

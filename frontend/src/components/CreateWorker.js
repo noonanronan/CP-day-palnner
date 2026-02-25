@@ -8,15 +8,14 @@ import { fromZonedTime } from "date-fns-tz";
 const predefinedRoles = ["KITUP", "AATT", "MT", "ICA"];
 
 const predefinedTimes = [
-    { label: "8:00 AM - 4:00 PM", start: new Date().setHours(8, 0), end: new Date().setHours(16, 0) },
-    { label: "8:00 AM - 4:30 PM", start: new Date().setHours(8, 0), end: new Date().setHours(16, 30) },
-    { label: "8:30 AM - 4:30 PM", start: new Date().setHours(8, 30), end: new Date().setHours(16, 30) },
-    { label: "8:45 AM - 5:45 PM", start: new Date().setHours(8, 45), end: new Date().setHours(17, 45) },
-    { label: "9:00 AM - 5:00 PM", start: new Date().setHours(9, 0), end: new Date().setHours(17, 0) },
-    { label: "9:15 AM - 6:15 PM", start: new Date().setHours(9, 15), end: new Date().setHours(18, 15) },
-    { label: "10:00 AM - 7:00 PM", start: new Date().setHours(10, 0), end: new Date().setHours(19, 0) },
+    { label: "8:00 AM - 4:00 PM",  start: new Date().setHours(8, 0),   end: new Date().setHours(16, 0)  },
+    { label: "8:00 AM - 4:30 PM",  start: new Date().setHours(8, 0),   end: new Date().setHours(16, 30) },
+    { label: "8:30 AM - 4:30 PM",  start: new Date().setHours(8, 30),  end: new Date().setHours(16, 30) },
+    { label: "8:45 AM - 5:45 PM",  start: new Date().setHours(8, 45),  end: new Date().setHours(17, 45) },
+    { label: "9:00 AM - 5:00 PM",  start: new Date().setHours(9, 0),   end: new Date().setHours(17, 0)  },
+    { label: "9:15 AM - 6:15 PM",  start: new Date().setHours(9, 15),  end: new Date().setHours(18, 15) },
+    { label: "10:00 AM - 7:00 PM", start: new Date().setHours(10, 0),  end: new Date().setHours(19, 0)  },
 ];
-
 
 const CreateWorker = () => {
     const [name, setName] = useState("");
@@ -25,8 +24,8 @@ const CreateWorker = () => {
     const navigate = useNavigate();
 
     const handleRoleChange = (role) => {
-        setSelectedRoles((prevRoles) =>
-            prevRoles.includes(role) ? prevRoles.filter((r) => r !== role) : [...prevRoles, role]
+        setSelectedRoles((prev) =>
+            prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
         );
     };
 
@@ -40,58 +39,45 @@ const CreateWorker = () => {
 
     const handleDateChange = (index, type, date) => {
         if (date instanceof Date && !isNaN(date)) {
-            const updatedAvailability = [...availability];
-            updatedAvailability[index][type] = date;
-            setAvailability(updatedAvailability);
-        } else {
-            console.error("Invalid date:", date);
+            const updated = [...availability];
+            updated[index][type] = date;
+            setAvailability(updated);
         }
     };
 
+    // "Add a predefined shift time as a new availability entry"
     const handleAddPredefinedTime = (time) => {
         setAvailability((prev) => [
             ...prev,
-            {
-            start: new Date(time.start),
-            end: new Date(time.end),
-            late: false
-            },
+            { start: new Date(time.start), end: new Date(time.end), late: false },
         ]);
-        };
-    
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         if (availability.some(({ start, end }) => !start || !end)) {
             alert("Please fill out all availability fields.");
             return;
         }
-    
+
         try {
             const timeZone = "Europe/Dublin";
-    
+
+            // "Convert local times to UTC before sending to the API"
             const adjustedAvailability = availability.map(({ start, end, late }) => ({
                 start: fromZonedTime(start, timeZone).toISOString(),
                 end: fromZonedTime(end, timeZone).toISOString(),
-                late: !!late  // boolean
-              }));
-            
-    
-            const workerData = {
-                name,
-                roles: selectedRoles,
-                availability: adjustedAvailability,
-            };
-    
-            await createWorker(workerData);
+                late: !!late,
+            }));
+
+            await createWorker({ name, roles: selectedRoles, availability: adjustedAvailability });
             navigate("/workers");
         } catch (error) {
             console.error("Error creating worker:", error);
             alert("Failed to create worker. Please check your input format.");
         }
     };
-    
 
     return (
         <div className="container mt-4">
@@ -117,7 +103,6 @@ const CreateWorker = () => {
                                     <input
                                         className="form-check-input"
                                         type="checkbox"
-                                        id={role}
                                         checked={selectedRoles.includes(role)}
                                         onChange={() => handleRoleChange(role)}
                                     />
@@ -126,7 +111,6 @@ const CreateWorker = () => {
                             ))}
                         </div>
                     </div>
-
                     <div className="mb-4">
                         <label className="form-label">Quick Availability</label>
                         <div className="quick-times">
@@ -142,7 +126,6 @@ const CreateWorker = () => {
                             ))}
                         </div>
                     </div>
-
                     <div className="mb-4">
                         <label className="form-label">Manual Availability</label>
                         {availability.map((range, index) => (
@@ -208,7 +191,6 @@ const CreateWorker = () => {
                             + Add Custom Time
                         </button>
                     </div>
-
                     <button type="submit" className="btn btn-success px-4">Create Instructor</button>
                 </form>
             </div>

@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; 
+import { useNavigate } from "react-router-dom";
 import "../css/login.css";
 
 const LoginPage = () => {
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -15,7 +15,7 @@ const LoginPage = () => {
         } else {
             setError("Incorrect password. Try again.");
         }
-    };    
+    };
 
     return (
         <div className="login-container">

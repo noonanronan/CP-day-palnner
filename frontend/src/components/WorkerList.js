@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-  getAllWorkers,
-  deleteWorker,
-  apiRequest,
-  uploadTemplate,
-  uploadAvailability,
-  generateSchedule,
+    getAllWorkers,
+    deleteWorker,
+    apiRequest,
+    uploadTemplate,
+    uploadAvailability,
+    generateSchedule,
 } from "../services/workerService";
 import { useNavigate } from "react-router-dom";
 import { format, parseISO, isValid, compareAsc } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
-
 
 const WorkerList = () => {
     const [workers, setWorkers] = useState([]);
@@ -21,46 +20,36 @@ const WorkerList = () => {
     const [file, setFile] = useState(null);
     const [error, setError] = useState(null);
     const [showUploadSection, setShowUploadSection] = useState(false);
+    const [showAvailabilitySection, setShowAvailabilitySection] = useState(false);
     const [morningIcaCount, setMorningIcaCount] = useState(4);
     const [afternoonIcaCount, setAfternoonIcaCount] = useState(4);
-    const navigate = useNavigate();
-
+    const [printUntilHour, setPrintUntilHour] = useState(16);
     const [availabilityFile, setAvailabilityFile] = useState(null);
     const [availabilityUploadError, setAvailabilityUploadError] = useState(null);
     const [availabilityUploadSuccess, setAvailabilityUploadSuccess] = useState(null);
+    const navigate = useNavigate();
 
-    const [printUntilHour, setPrintUntilHour] = useState(16); // 16, 17, or 18
-
-
-    // const handleLogout = () => {
-    //     localStorage.removeItem("isAuthenticated");
-    //     navigate("/");
-    // };    
-
+    // "Fetch workers and templates on mount"
     useEffect(() => {
         const fetchWorkers = async () => {
             try {
                 const data = await getAllWorkers();
                 const now = new Date();
-    
+
+                // "Strip out any availability that has already ended"
                 const cleanedWorkers = data.workers.map((worker) => {
                     const filteredAvailability = worker.availability
-                        .map(({ start, end, late }) => ({
-                        start,
-                        end,
-                        late: !!late, 
-                        }))
+                        .map(({ start, end, late }) => ({ start, end, late: !!late }))
                         .filter(({ end }) => new Date(end) >= now);
-
                     return { ...worker, availability: filteredAvailability };
-                    });
-    
+                });
+
                 setWorkers(cleanedWorkers);
             } catch (error) {
                 console.error("Error fetching workers:", error);
             }
         };
-    
+
         const fetchTemplates = async () => {
             try {
                 const data = await apiRequest("get", "/list-templates");
@@ -68,29 +57,26 @@ const WorkerList = () => {
             } catch (error) {
                 console.error("Error fetching templates:", error);
             }
-            };
-    
+        };
+
         fetchWorkers();
         fetchTemplates();
     }, []);
-    
 
     const handleDelete = async (id) => {
         try {
             await deleteWorker(id);
             setWorkers((prev) => prev.filter((worker) => worker.id !== id));
         } catch (error) {
-            alert(error.message); 
+            alert(error.message);
         }
-    };    
-    
+    };
 
     const handleDownloadSchedule = async () => {
         if (!selectedTemplate) {
             alert("Please select a template to generate the schedule.");
             return;
         }
-
         try {
             const blob = await generateSchedule({
                 template: selectedTemplate,
@@ -100,7 +86,8 @@ const WorkerList = () => {
                 print_until_hour: printUntilHour,
             });
 
-            const url = window.URL.createObjectURL(blob); 
+            // "Trigger file download in the browser"
+            const url = window.URL.createObjectURL(blob);
             const link = document.createElement("a");
             link.href = url;
             link.setAttribute("download", "day_schedule.xlsx");
@@ -108,18 +95,15 @@ const WorkerList = () => {
             link.click();
             link.remove();
             window.URL.revokeObjectURL(url);
-            } catch (err) {
+        } catch (err) {
             console.error("Error downloading schedule:", err);
             alert("Failed to download schedule. Please try again.");
-            }
-        };
+        }
+    };
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
-        if (
-            selectedFile &&
-            (selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".ods"))
-        ) {
+        if (selectedFile && (selectedFile.name.endsWith(".xlsx") || selectedFile.name.endsWith(".ods"))) {
             setFile(selectedFile);
             setError(null);
         } else {
@@ -135,7 +119,6 @@ const WorkerList = () => {
         }
         const formData = new FormData();
         formData.append("file", file);
-
         try {
             const resp = await uploadTemplate(formData);
             alert("File uploaded successfully!");
@@ -144,7 +127,7 @@ const WorkerList = () => {
             console.error("Error uploading file:", err);
             setError("Failed to upload the file. Please check the format and try again.");
         }
-        };
+    };
 
     const handleAvailabilityFileChange = (e) => {
         const selectedFile = e.target.files[0];
@@ -157,16 +140,14 @@ const WorkerList = () => {
             setAvailabilityUploadError("Please upload a valid Excel (.xlsx) file.");
         }
     };
-    
+
     const handleUploadAvailability = async () => {
         if (!availabilityFile) {
             setAvailabilityUploadError("No file selected.");
             return;
         }
-
         const formData = new FormData();
         formData.append("file", availabilityFile);
-
         try {
             await uploadAvailability(formData);
             setAvailabilityUploadSuccess("Availability uploaded successfully!");
@@ -176,12 +157,9 @@ const WorkerList = () => {
             setAvailabilityUploadSuccess(null);
             setAvailabilityUploadError("Failed to upload availability. Check the file format and try again.");
         }
-        };
+    };
 
-    
-
-
-    // 🔹 Helper: Get the first future availability date
+    // "Returns the first upcoming availability date for a worker"
     const getNextAvailability = (availability) => {
         const now = new Date();
         const nextDates = availability
@@ -194,29 +172,20 @@ const WorkerList = () => {
         return nextDates.length > 0 ? nextDates[0] : null;
     };
 
-
-    // 🔹 Helper: Get today's availability range (for showing correct time)
+    // "Returns today's availability range if the worker is in today"
     const getTodayAvailability = (availability) => {
         const today = new Date();
-        today.setHours(0, 0, 0, 0); // Ensure we're checking full-day range
+        today.setHours(0, 0, 0, 0);
         const todayEnd = new Date(today);
         todayEnd.setHours(23, 59, 59, 999);
-    
+
         return availability.find(({ start, end }) => {
             const startTime = parseISO(start);
             const endTime = parseISO(end);
-    
-            return (
-                isValid(startTime) &&
-                isValid(endTime) &&
-                startTime <= todayEnd &&
-                endTime >= today // Ensures the worker is available **within today**
-            );
+            return isValid(startTime) && isValid(endTime) && startTime <= todayEnd && endTime >= today;
         });
     };
-    
 
-    // 🔹 Helper: Check if a worker has future availability
     const hasFutureAvailability = (availability) => {
         const now = new Date();
         return availability.some(({ start }) => {
@@ -224,52 +193,69 @@ const WorkerList = () => {
             return isValid(startDate) && compareAsc(startDate, now) > 0;
         });
     };
-    
-    // 🔹 Helper: Get status (today, future, none)
+
+    // "Returns today, future, or none based on worker availability"
     const getAvailabilityStatus = (availability) => {
-        const todayAvailability = getTodayAvailability(availability);
-        if (todayAvailability) return "today";
+        if (getTodayAvailability(availability)) return "today";
         if (hasFutureAvailability(availability)) return "future";
         return "none";
     };
-    
-    
 
-
-    // 🔹 Sort workers: Today first, then future, then none
+    // "Sort: workers in today first, then by next availability date, then no availability"
     const sortedWorkers = [...workers].sort((a, b) => {
-        const aAvailableToday = getTodayAvailability(a.availability);
-        const bAvailableToday = getTodayAvailability(b.availability);
-    
-        if (aAvailableToday && !bAvailableToday) return -1;
-        if (!aAvailableToday && bAvailableToday) return 1;
-    
+        const aToday = getTodayAvailability(a.availability);
+        const bToday = getTodayAvailability(b.availability);
+        if (aToday && !bToday) return -1;
+        if (!aToday && bToday) return 1;
+
         const aNext = getNextAvailability(a.availability);
         const bNext = getNextAvailability(b.availability);
-    
         if (aNext && bNext) return compareAsc(aNext, bNext);
         if (aNext && !bNext) return -1;
         if (!aNext && bNext) return 1;
         return 0;
     });
-    
-    
-    
 
     return (
         <div className="container mt-4">
-            {/* Page Header */}
             <div className="page-header">
                 <h1 className="mb-0">Instructor List</h1>
-                <button
-                    className="btn btn-outline-secondary btn-sm"
-                    onClick={() => setShowUploadSection(!showUploadSection)}
-                >
-                    {showUploadSection ? "Hide Template Upload" : "⬆ Upload Template"}
-                </button>
+                <div className="d-flex gap-2">
+                    <button
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={() => setShowAvailabilitySection(!showAvailabilitySection)}
+                    >
+                        {showAvailabilitySection ? "Hide Availability Upload" : "⬆ Upload Availability"}
+                    </button>
+                    <button
+                        className="btn btn-outline-secondary btn-sm"
+                        onClick={() => setShowUploadSection(!showUploadSection)}
+                    >
+                        {showUploadSection ? "Hide Template Upload" : "⬆ Upload Template"}
+                    </button>
+                </div>
             </div>
 
-            {/* Upload Template Section */}
+            {showAvailabilitySection && (
+                <div className="card p-3 mb-4">
+                    <div className="panel-header">
+                        <span className="panel-icon blue">📊</span>
+                        <h5>Upload Worker Availability</h5>
+                    </div>
+                    <input
+                        type="file"
+                        className="form-control mb-3"
+                        accept=".xlsx"
+                        onChange={handleAvailabilityFileChange}
+                    />
+                    <button className="btn btn-primary" onClick={handleUploadAvailability}>
+                        Upload Availability
+                    </button>
+                    {availabilityUploadSuccess && <p className="text-success mt-2">{availabilityUploadSuccess}</p>}
+                    {availabilityUploadError && <p className="text-danger mt-2">{availabilityUploadError}</p>}
+                </div>
+            )}
+
             {showUploadSection && (
                 <div className="card p-3 mb-4">
                     <div className="panel-header">
@@ -289,7 +275,6 @@ const WorkerList = () => {
                 </div>
             )}
 
-            {/* Controls for Date & Template Selection */}
             <div className="card p-3 mb-4">
                 <div className="panel-header">
                     <span className="panel-icon green">📅</span>
@@ -314,9 +299,7 @@ const WorkerList = () => {
                         >
                             <option value="">— Choose Template —</option>
                             {templates.map((template, index) => (
-                                <option key={index} value={template}>
-                                    {template}
-                                </option>
+                                <option key={index} value={template}>{template}</option>
                             ))}
                         </select>
                     </div>
@@ -362,30 +345,6 @@ const WorkerList = () => {
                 </div>
             </div>
 
-            {/* Upload Availability */}
-            <div className="card p-3 mb-4">
-                <div className="panel-header">
-                    <span className="panel-icon blue">📊</span>
-                    <h5>Upload Worker Availability</h5>
-                </div>
-                <input
-                    type="file"
-                    className="form-control mb-3"
-                    accept=".xlsx"
-                    onChange={handleAvailabilityFileChange}
-                />
-                <button className="btn btn-primary" onClick={handleUploadAvailability}>
-                    Upload Availability
-                </button>
-                {availabilityUploadSuccess && (
-                    <p className="text-success mt-2">{availabilityUploadSuccess}</p>
-                )}
-                {availabilityUploadError && (
-                    <p className="text-danger mt-2">{availabilityUploadError}</p>
-                )}
-            </div>
-
-            {/* Search Bar */}
             <div className="search-wrapper">
                 <span className="search-icon">🔍</span>
                 <input
@@ -397,15 +356,15 @@ const WorkerList = () => {
                 />
             </div>
 
-            {/* Worker Cards */}
             <div className="row g-3 worker-grid">
                 {sortedWorkers
                     .filter((worker) => worker.name.toLowerCase().includes(searchQuery.toLowerCase()))
                     .map((worker) => {
-
-                        let borderClass = "";
-                        let statusBadge = null;
                         const todayRange = getTodayAvailability(worker.availability);
+                        const availStatus = getAvailabilityStatus(worker.availability);
+
+                        let borderClass = "border border-secondary";
+                        let statusBadge = <span className="badge bg-secondary">No Availability</span>;
 
                         if (todayRange) {
                             borderClass = "border border-success";
@@ -413,12 +372,7 @@ const WorkerList = () => {
                         } else if (getNextAvailability(worker.availability)) {
                             borderClass = "border border-warning";
                             statusBadge = <span className="badge bg-warning text-dark">Available Soon</span>;
-                        } else {
-                            borderClass = "border border-secondary";
-                            statusBadge = <span className="badge bg-secondary">No Availability</span>;
                         }
-
-                        const availStatus = getAvailabilityStatus(worker.availability);
 
                         return (
                             <div className={`col-12 col-sm-6 col-md-4 col-lg-3 ${borderClass}`} key={worker.id}>
@@ -435,9 +389,9 @@ const WorkerList = () => {
                                         </div>
                                         <p className="avail-text">
                                             {availStatus === "today" && todayRange
-                                                ? `${formatInTimeZone(todayRange.start, 'Europe/Dublin', "hh:mm a")} – ${formatInTimeZone(todayRange.end, 'Europe/Dublin', "hh:mm a")}`
+                                                ? `${formatInTimeZone(todayRange.start, "Europe/Dublin", "hh:mm a")} – ${formatInTimeZone(todayRange.end, "Europe/Dublin", "hh:mm a")}`
                                                 : availStatus === "future"
-                                                ? `Next: ${formatInTimeZone(getNextAvailability(worker.availability), 'Europe/Dublin', "MMM dd, yyyy")}`
+                                                ? `Next: ${formatInTimeZone(getNextAvailability(worker.availability), "Europe/Dublin", "MMM dd, yyyy")}`
                                                 : "No upcoming availability"}
                                         </p>
                                         <div className="d-flex justify-content-between">
