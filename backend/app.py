@@ -34,7 +34,6 @@ CORS(
     allow_headers=["Content-Type", "Authorization"],
 )
 
-
 @app.after_request
 def add_cors_headers(resp):
     origin = request.headers.get("Origin")
@@ -51,11 +50,12 @@ def add_cors_headers(resp):
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# Keep the connection pool healthy on hosts that close idle conns
-app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
-    "pool_pre_ping": True,    # tests connections before using
-    "pool_recycle": 300,      # recycle connections every 5 mins
-}
+# Keep the connection pool healthy on hosts that close idle conns (not needed for SQLite)
+if not os.getenv("DATABASE_URI", "").startswith("sqlite"):
+    app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+        "pool_pre_ping": True,
+        "pool_recycle": 300,
+    }
 
 # logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
