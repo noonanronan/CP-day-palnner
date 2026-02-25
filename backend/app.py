@@ -13,10 +13,7 @@ import openpyxl
 from openpyxl.styles import Font, PatternFill
 import re
 from random import choice
-from flask import request
 from dotenv import load_dotenv
-if os.getenv("FLASK_ENV", "production") != "production":
-    load_dotenv()
 
 load_dotenv()
 
@@ -112,10 +109,31 @@ def upload_excel():
         filepath = os.path.join(UPLOAD_FOLDER, filename)
         file.save(filepath)
 
-        return jsonify({'message': f'File {filename} uploaded successfully'}), 200
+        return jsonify({'message': f'File {filename} uploaded successfully', 'filename': filename}), 200
     except Exception as e:
         logging.error(f"Error uploading file: {e}")
         return jsonify({'error': str(e)}), 500
+
+# Convert an Excel cell value to datetime.time
+def to_time(val):
+    from datetime import time as _time
+    if val is None:
+        return None
+    if isinstance(val, datetime):
+        return val.time()
+    if isinstance(val, _time):
+        return val
+    if isinstance(val, str):
+        s = val.strip().upper()
+        try:
+            return datetime.strptime(s, "%H:%M").time()
+        except ValueError:
+            pass
+        try:
+            return datetime.strptime(s, "%I:%M %p").time()
+        except ValueError:
+            return None
+    return None
 
 @app.route('/upload-worker-availability', methods=['POST'])
 def upload_worker_availability():
@@ -125,9 +143,6 @@ def upload_worker_availability():
             return jsonify({'error': 'No file provided'}), 400
 
         workbook = openpyxl.load_workbook(file)
-
-        # --- Helper: robust time-range parser (handles -, – , —, spaces, 24h and 12h AM/PM) ---
-        DASH_PATTERN = r"[-–—]"  # hyphen, en dash, em dash
 
         def parse_time_range(cell_val):
             """
@@ -203,33 +218,6 @@ def upload_worker_availability():
                 if (start_t is None or end_t is None):
                     start_cell = row[3] if len(row) > 3 else None  # col D
                     end_cell   = row[4] if len(row) > 4 else None  # col E
-
-                    def to_time(val):
-                        """
-                        Convert an Excel cell value into datetime.time if possible.
-                        Handles datetime, time, 'HH:MM', and 'HH:MM AM/PM'.
-                        """
-                        if val is None:
-                            return None
-                        if isinstance(val, datetime):
-                            return val.time()
-                        try:
-                            from datetime import time as _time
-                            if isinstance(val, _time):
-                                return val
-                        except Exception:
-                            pass
-                        if isinstance(val, str):
-                            s = val.strip().upper()
-                            try:
-                                return datetime.strptime(s, "%H:%M").time()
-                            except ValueError:
-                                pass
-                            try:
-                                return datetime.strptime(s, "%I:%M %p").time()
-                            except ValueError:
-                                return None
-                        return None
 
                     if start_cell and end_cell:
                         start_t = to_time(start_cell.value)
@@ -340,10 +328,6 @@ def generate_schedule():
         except ValueError:
             return jsonify({'error': 'Invalid date format. Use YYYY-MM-DD'}), 400
 
-        selected_date = datetime.strptime(selected_date_str, "%Y-%m-%d").replace(tzinfo=timezone.utc)  # ⬅️ Convert to datetime
-        if not selected_file:
-            return jsonify({'error': 'No template selected'}), 400
-
         filepath = os.path.join(UPLOAD_FOLDER, selected_file)
         if not os.path.exists(filepath):
             return jsonify({'error': 'Selected template not found'}), 404
@@ -410,9 +394,6 @@ def generate_schedule():
         if "Course Support 1" in role_to_column:
             prioritized_roles_morning.insert(5, "Course Support 1")  # Insert at the correct position
 
-        valid_roles = {}
-        used_workers = set()
-
         def get_eligible_workers(role):
             eligible = [
                 worker for worker in (in_today_workers + late_shift_workers)
@@ -462,8 +443,6 @@ def generate_schedule():
                 ]
 
             return []
-
-        morning_assignments = {}  # Dictionary to store the morning role assignments
 
         # Assign workers to the first time slot (9:00-9:30)
         for role in prioritized_roles_morning:
@@ -688,11 +667,7 @@ def generate_schedule():
         if unassigned_workers:
             logging.warning(f"Unassigned workers found in the morning: {', '.join(unassigned_workers)}")
 
-        # Track afternoon usage
-        afternoon_valid_roles = {}  # Roles assigned in the afternoon
-        afternoon_used_workers = set()  # Workers used in the afternoon
-
-        # Define role categories for clarity and maintainability
+        # Define role categories
         shed_roles = {'Host', 'Dekit', 'Kit Up 1', 'Kit Up 2', 'Kit Up 3', 'Clip In 1', 'Clip In 2'}
         tree_trek_roles = {'TREE TREK 1', 'TREE TREK 2'}
         course_roles = ['Course Support 2', 'Zip Top 1', 'Zip Top 2', 'Zip Ground', 'rotate to course 1']
@@ -871,8 +846,6 @@ def generate_schedule():
                     if column:
                         sheet.cell(row=afternoon_slot_row, column=column).value = worker if worker else ""
 
-            # # Assign initial course and tree trek workers for the afternoon (12:45-1:30)
-            # course_workers = [afternoon_valid_roles.get(role) for role in course_roles]
             tree_trek_workers = [afternoon_valid_roles.get(role) for role in tree_trek_roles]
 
             # Store afternoon workers before rotation ####
