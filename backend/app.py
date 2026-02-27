@@ -945,8 +945,8 @@ def generate_schedule():
             if slot_index == 0:  # Initialize course roles for the first slot
                 course_workers = [afternoon_valid_roles.get(role) for role in course_roles]
 
-            # Rotate course roles after the first slot
-            if slot_index > 0:
+            # Rotate course roles for each slot
+            if slot_index >= 0:
                 course_workers = course_workers[-1:] + course_workers[:-1]  # Rotate the roles
                 for role, worker in zip(course_roles, course_workers):
                     column = role_to_column.get(role)
