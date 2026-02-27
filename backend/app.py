@@ -299,10 +299,12 @@ def generate_schedule():
 
         ica_morning_count = request.json.get("ica_morning_count", 4)
         ica_afternoon_count = request.json.get("ica_afternoon_count", 4)
+        ica_evening_count = request.json.get("ica_evening_count", 4)
 
         # Clamp values to stay between 2 and 4
         ica_morning_count = max(2, min(4, int(ica_morning_count)))
         ica_afternoon_count = max(2, min(4, int(ica_afternoon_count)))
+        ica_evening_count = max(2, min(4, int(ica_evening_count)))
 
         # option to extend non-ICA printing to 4pm, 5pm, or 6pm
         print_until_hour = int(request.json.get("print_until_hour", 16))
@@ -506,30 +508,6 @@ def generate_schedule():
         untrained_workers = [
             worker for worker in in_today_workers if worker.name not in used_workers
         ]
-
-        # Ensure all Kit Up roles are filled FIRST
-        kitup_roles_priority = ['Kit Up 1', 'Kit Up 2']  # Highest priority
-        kitup_roles_secondary = ['Kit Up 3', 'Clip In 1', 'Clip In 2']  # Lower priority
-
-        unassigned_kitup_workers = [
-            worker for worker in in_today_workers if worker.name not in used_workers and 'KITUP' in worker.roles
-        ]
-
-        # Assign to Kit Up 1 & Kit Up 2 first
-        for role in kitup_roles_priority:
-            if role in role_to_column and role not in valid_roles and unassigned_kitup_workers:
-                selected_worker = unassigned_kitup_workers.pop(0)  # Assign first available KITUP worker
-                valid_roles[role] = selected_worker.name
-                used_workers.add(selected_worker.name)
-                logging.debug(f"Assigning {selected_worker.name} to {role} (KITUP priority role)")
-
-        # Assign to other Kit Up/Clip In roles after that
-        for role in kitup_roles_secondary:
-            if role in role_to_column and role not in valid_roles and unassigned_kitup_workers:
-                selected_worker = unassigned_kitup_workers.pop(0)  # Assign first available KITUP worker
-                valid_roles[role] = selected_worker.name
-                used_workers.add(selected_worker.name)
-                logging.debug(f"Assigning {selected_worker.name} to {role} (Secondary KITUP role)")
 
         # Now, Assign Host & Dekit AFTER all Kit Up roles are filled
         unassigned_workers = [
@@ -786,18 +764,6 @@ def generate_schedule():
                 afternoon_used_workers.add(selected_worker.name)
                 logging.debug(f"Assigning {selected_worker.name} to {role} (Afternoon KITUP role)")
 
-        # Ensure all Kit Up roles are filled FIRST
-        unassigned_kitup_workers_afternoon = [
-            worker for worker in in_today_workers if worker.name not in afternoon_used_workers and 'KITUP' in worker.roles
-        ]
-
-        for role in kitup_roles_priority + kitup_roles_secondary:
-            if role in role_to_column and role not in afternoon_valid_roles and unassigned_kitup_workers_afternoon:
-                selected_worker = unassigned_kitup_workers_afternoon.pop(0)  # Assign first available KITUP worker
-                afternoon_valid_roles[role] = selected_worker.name
-                afternoon_used_workers.add(selected_worker.name)
-                logging.debug(f"Assigning {selected_worker.name} to {role} (Afternoon KITUP role)")
-
         # Now, Assign Host & Dekit AFTER all Kit Up roles are filled
         unassigned_workers_afternoon = [
             worker for worker in in_today_workers if worker.name not in afternoon_used_workers
@@ -979,8 +945,8 @@ def generate_schedule():
             if slot_index == 0:  # Initialize course roles for the first slot
                 course_workers = [afternoon_valid_roles.get(role) for role in course_roles]
 
-            # Rotate course roles immediately after the first slot
-            if slot_index >= 0:
+            # Rotate course roles after the first slot
+            if slot_index > 0:
                 course_workers = course_workers[-1:] + course_workers[:-1]  # Rotate the roles
                 for role, worker in zip(course_roles, course_workers):
                     column = role_to_column.get(role)
@@ -989,12 +955,13 @@ def generate_schedule():
 
         evening_slots_rows = [16, 17, 18, 19, 20, 21]  # Rows for 16:00, 16:30, 17:00, 17:30, 18:00, 18:30
 
-        # Ensure we only assign available late workers (if fewer than 4 exist)
-        late_workers_for_ica = late_shift_workers[:min(4, len(late_shift_workers))]
+        # Ensure we only assign available late workers up to the selected evening ICA count
+        late_workers_for_ica = late_shift_workers[:min(ica_evening_count, len(late_shift_workers))]
+        ica_roles_evening = [f"ICA {i}" for i in range(1, ica_evening_count + 1)]
 
         # Assign them for each evening time slot
         for slot_row in evening_slots_rows:
-            for i, ica_role in enumerate(['ICA 1', 'ICA 2', 'ICA 3', 'ICA 4']):
+            for i, ica_role in enumerate(ica_roles_evening):
                 if i < len(late_workers_for_ica):  # Ensure we have a worker
                     worker = late_workers_for_ica[i]
                     column = role_to_column.get(ica_role)

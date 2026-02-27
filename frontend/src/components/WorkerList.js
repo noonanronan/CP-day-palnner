@@ -23,6 +23,7 @@ const WorkerList = () => {
     const [showAvailabilitySection, setShowAvailabilitySection] = useState(false);
     const [morningIcaCount, setMorningIcaCount] = useState(4);
     const [afternoonIcaCount, setAfternoonIcaCount] = useState(4);
+    const [eveningIcaCount, setEveningIcaCount] = useState(4);
     const [printUntilHour, setPrintUntilHour] = useState(16);
     const [availabilityFile, setAvailabilityFile] = useState(null);
     const [availabilityUploadError, setAvailabilityUploadError] = useState(null);
@@ -83,6 +84,7 @@ const WorkerList = () => {
                 date: selectedDate,
                 ica_morning_count: morningIcaCount,
                 ica_afternoon_count: afternoonIcaCount,
+                ica_evening_count: eveningIcaCount,
                 print_until_hour: printUntilHour,
             });
 
@@ -323,6 +325,17 @@ const WorkerList = () => {
                             min={2}
                             max={4}
                             onChange={(e) => setAfternoonIcaCount(e.target.value)}
+                        />
+                    </div>
+                    <div className="col-md-2 col-6">
+                        <label className="form-label">Evening ICA</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={eveningIcaCount}
+                            min={2}
+                            max={4}
+                            onChange={(e) => setEveningIcaCount(e.target.value)}
                         />
                     </div>
                     <div className="col-md-3 col-6">
