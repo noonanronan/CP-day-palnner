@@ -1,0 +1,64 @@
+DAY PLANNER - PROJECT OVERVIEW
+================================
+
+
+WHAT IT DOES
+------------
+A full-stack web app for managing staff schedules at an activity centre.
+Managers can create workers, set their availability and roles, then generate
+a daily schedule which exports to Excel.
+
+
+TECH STACK
+----------
+Frontend  : React
+Backend   : Python / Flask
+Database  : SQLite (local), PostgreSQL (live)
+Deployed  : Render
+
+
+PROJECT STRUCTURE
+-----------------
+
+/backend
+  app.py               - The entire Flask server. All routes, database models,
+                         and schedule generation logic live here.
+  requirements.txt     - Python packages needed to run the backend.
+  Procfile             - Tells Render how to start the server (gunicorn).
+  .env                 - Environment variables (database URL, password, CORS).
+  /instance
+    day_planner.db     - Local SQLite database file used during development.
+  /uploaded_templates
+    Empty - Weekday.xlsx  - Excel template for weekday schedules.
+    Empty - Weekend.xlsx  - Excel template for weekend schedules.
+
+/frontend
+  /src
+    index.js           - Entry point. Mounts the React app into the browser.
+    App.js             - Sets up routing and the navbar.
+    App.css            - Global styles and design system (dark navy theme).
+    index.css          - Minimal base styles.
+
+    /components
+      LoginPage.js     - Login screen.
+      ProtectedRoute.js- Blocks access to pages if the user is not logged in.
+      WorkerList.js    - Main dashboard. Shows all workers, schedule controls,
+                         and file upload sections.
+      CreateWorker.js  - Form to add a new worker with roles and availability.
+      UpdateWorker.js  - Form to edit an existing worker.
+
+    /css
+      login.css        - Styles specific to the login page.
+
+    /services
+      workerService.js - Handles all API calls to the backend using Axios.
+
+  /public
+    index.html         - The HTML shell the React app loads into.
+    favicon.ico        - Browser tab icon.
+    manifest.json      - PWA config file.
+
+/database
+  (empty - schema is defined in backend/app.py via SQLAlchemy)
+
+README.md              - Project documentation and setup instructions.
