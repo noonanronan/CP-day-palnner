@@ -185,7 +185,7 @@ def upload_worker_availability():
                     break
 
             if not target_date:
-                logging.warning(f"⚠️ Skipping sheet '{sheet.title}' — no date found on row 22.")
+                logging.warning(f" Skipping sheet '{sheet.title}' — no date found on row 22.")
                 continue  # move to next sheet
 
             # Step 2: Collect names and times from row 24 down on this sheet
@@ -400,7 +400,7 @@ def generate_schedule():
                 if worker.name not in used_workers
             ]
 
-            logging.debug(f"🔍 Role: {role} | Eligible workers before filtering: {[w.name for w in eligible]}")
+            logging.debug(f" Role: {role} | Eligible workers before filtering: {[w.name for w in eligible]}")
 
             # KITUP Roles
             if role in role_to_training['KITUP']:
@@ -700,7 +700,7 @@ def generate_schedule():
                     eligible = preferred
                 else:
                     # Allow reuse only as fallback
-                    logging.warning(f"⚠️ No new workers for {role}, reusing someone from the morning.")
+                    logging.warning(f" No new workers for {role}, reusing someone from the morning.")
 
             if role in role_to_training['KITUP']:
                 eligible = [
@@ -915,12 +915,12 @@ def generate_schedule():
             ]
 
             for role in prioritized_roles_afternoon:
-                # ✅ Skip if already assigned at 12:45–1:30
+                #  Skip if already assigned at 12:45–1:30
                 if role in afternoon_valid_roles:
                     continue
                 if role in ica_roles:  # Skip ICA roles since they are already assigned
                     continue
-                if role == "Mini Trek":  # ⛔️ Also skip re-assigning Mini Trek after 12:45–1:30
+                if role == "Mini Trek":  # Also skip re-assigning Mini Trek after 12:45–1:30
                     continue
 
 

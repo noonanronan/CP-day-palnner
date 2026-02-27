@@ -1,0 +1,7 @@
+C:\Projects\day-planner\frontend
+npm start
+
+C:\Projects\day-planner\backend
+venv\Scripts\activate
+pip install -r requirements.txt - refresh the session
+python app.py
