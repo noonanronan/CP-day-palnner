@@ -896,7 +896,7 @@ def generate_schedule():
 
             # Ensure ICA workers assigned at 12:45 - 1:30 are stored for reuse
             ica_workers_after_lunch = {
-                role: afternoon_valid_roles[role] for role in ica_roles if role in afternoon_valid_roles
+                role: afternoon_valid_roles[role] for role in ica_roles_afternoon if role in afternoon_valid_roles
             }
 
         # Assign workers for each afternoon time slot
@@ -911,14 +911,14 @@ def generate_schedule():
             # Skip reassigning course roles that were already rotated and written
             prioritized_roles_afternoon = [
                 role for role in prioritized_roles_afternoon
-                if role not in course_roles and role not in ica_roles
+                if role not in course_roles and role not in ica_roles_afternoon
             ]
 
             for role in prioritized_roles_afternoon:
                 #  Skip if already assigned at 12:45–1:30
                 if role in afternoon_valid_roles:
                     continue
-                if role in ica_roles:  # Skip ICA roles since they are already assigned
+                if role in ica_roles_afternoon:  # Skip ICA roles since they are already assigned
                     continue
                 if role == "Mini Trek":  # Also skip re-assigning Mini Trek after 12:45–1:30
                     continue
@@ -941,7 +941,7 @@ def generate_schedule():
 
             # Assign workers for the current time slot
             for role in prioritized_roles_afternoon:
-                if role == "Mini Trek" and role in afternoon_valid_roles:
+                if role in afternoon_valid_roles:
                     continue
 
                 eligible_workers = get_afternoon_eligible_workers(role)
