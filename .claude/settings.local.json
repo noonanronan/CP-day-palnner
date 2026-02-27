@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd:*)",
+      "WebFetch(domain:api.github.com)"
+    ]
+  }
+}

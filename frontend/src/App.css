@@ -1,11 +1,9 @@
-/* ============================================================
-   Day Planner — Global Design System
-   ============================================================ */
+/* Day Planner — Global Design System */
 
-/* ── Google Fonts ───────────────────────────────────────────── */
+/* Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
-/* ── CSS Variables ──────────────────────────────────────────── */
+/* CSS Variables */
 :root {
   --navy:          #0f172a;
   --navy-mid:      #1e293b;
@@ -35,7 +33,7 @@
   --transition:    0.2s ease;
 }
 
-/* ── Base ───────────────────────────────────────────────────── */
+/* Base */
 body {
   background: var(--page-bg);
   color: var(--text-body);
@@ -44,7 +42,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ── Navbar ─────────────────────────────────────────────────── */
+/* Navbar */
 .navbar {
   background: var(--navy) !important;
   box-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
@@ -105,12 +103,12 @@ body {
   transform: translateY(-1px);
 }
 
-/* ── Page Layout ────────────────────────────────────────────── */
+/* Page Layout */
 .container.mt-4 {
   max-width: 1400px;
 }
 
-/* ── Typography ─────────────────────────────────────────────── */
+/* Typography */
 h1 {
   font-size: 1.65rem;
   font-weight: 800;
@@ -124,7 +122,7 @@ h5 {
   font-size: 0.95rem;
 }
 
-/* ── Cards ──────────────────────────────────────────────────── */
+/* Cards */
 .card {
   background: var(--card-bg);
   border: 1px solid var(--border) !important;
@@ -138,7 +136,7 @@ h5 {
   padding: 1.5rem !important;
 }
 
-/* ── Panel headers (inside control cards) ───────────────────── */
+/* Panel headers (inside control cards) */
 .panel-header {
   display: flex;
   align-items: center;
@@ -172,7 +170,7 @@ h5 {
 .panel-icon.green { background: var(--green-light); color: var(--green); }
 .panel-icon.amber { background: var(--amber-light); color: var(--amber); }
 
-/* ── Form controls ──────────────────────────────────────────── */
+/* Form controls */
 .form-control,
 .form-select {
   border: 1.5px solid var(--border);
@@ -203,7 +201,7 @@ h5 {
   margin-bottom: 0.4rem;
 }
 
-/* ── Buttons ────────────────────────────────────────────────── */
+/* Buttons */
 .btn {
   font-weight: 600;
   font-family: inherit;
@@ -280,7 +278,7 @@ h5 {
   color: #fff !important;
 }
 
-/* ── Badges ─────────────────────────────────────────────────── */
+/* Badges */
 .badge {
   font-weight: 600;
   font-size: 0.7rem;
@@ -302,7 +300,7 @@ h5 {
   background: #94a3b8 !important;
 }
 
-/* ── Page header row ────────────────────────────────────────── */
+/* Page header row */
 .page-header {
   display: flex;
   justify-content: space-between;
@@ -310,7 +308,7 @@ h5 {
   margin-bottom: 1.5rem;
 }
 
-/* ── Search bar ─────────────────────────────────────────────── */
+/* Search bar */
 .search-wrapper {
   position: relative;
   margin-bottom: 1.25rem;
@@ -336,7 +334,7 @@ h5 {
   z-index: 1;
 }
 
-/* ── Worker Cards Grid ──────────────────────────────────────── */
+/* Worker Cards Grid */
 
 /* Remove Bootstrap border from col wrapper */
 .worker-grid > [class*="col-"] {
@@ -441,7 +439,7 @@ h5 {
   border-radius: 7px !important;
 }
 
-/* ── File input ─────────────────────────────────────────────── */
+/* File input */
 .form-control[type='file'] {
   cursor: pointer;
   padding: 0.45rem 0.75rem;
@@ -465,7 +463,7 @@ h5 {
   background: var(--blue);
 }
 
-/* ── Quick time picker buttons ──────────────────────────────── */
+/* Quick time picker buttons */
 .quick-times {
   display: flex;
   flex-wrap: wrap;
@@ -479,7 +477,7 @@ h5 {
   border-radius: 20px !important;
 }
 
-/* ── Availability row (DatePickers) ─────────────────────────── */
+/* Availability row (DatePickers) */
 .availability-row {
   background: #f8fafc;
   border: 1px solid var(--border);
@@ -492,7 +490,7 @@ h5 {
   gap: 0.6rem;
 }
 
-/* ── Checkboxes ─────────────────────────────────────────────── */
+/* Checkboxes */
 .form-check-input {
   border: 2px solid var(--border);
   border-radius: 5px !important;
@@ -515,7 +513,7 @@ h5 {
   cursor: pointer;
 }
 
-/* ── Role checkboxes ────────────────────────────────────────── */
+/* Role checkboxes */
 .role-check-group {
   display: flex;
   flex-wrap: wrap;
@@ -550,7 +548,7 @@ h5 {
   margin: 0;
 }
 
-/* ── Messages ───────────────────────────────────────────────── */
+/* Messages */
 .text-success {
   color: var(--green) !important;
   font-size: 0.85rem;
@@ -563,7 +561,7 @@ h5 {
   font-weight: 500;
 }
 
-/* ── React DatePicker overrides ─────────────────────────────── */
+/* React DatePicker overrides */
 .react-datepicker-wrapper {
   flex: 1;
   min-width: 160px;
@@ -594,7 +592,7 @@ h5 {
   border-radius: 6px !important;
 }
 
-/* ── Responsive tweaks ──────────────────────────────────────── */
+/* Responsive tweaks */
 @media (max-width: 576px) {
   h1 { font-size: 1.35rem; }
 
