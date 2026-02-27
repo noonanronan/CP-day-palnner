@@ -1,75 +1,89 @@
-# Day Planner
+# Day Planner                                                                                                                                                                                                                                                                                                                                                           
+  A full-stack workforce scheduling application designed to manage staff availability, role assignments, and daily rota generation.
 
-A full-stack web app for managing worker schedules and availability. Built with a React frontend and Flask backend, deployed via Render.
+  Built with a React frontend and Flask backend, the system automates schedule creation while preventing availability conflicts and supporting real operational constraints.                                                                                                                                                                                                
+  ## Overview
+  Day Planner was built to streamline staff scheduling in a live operational environment. It allows managers to:
+  - Maintain structured worker profiles
+  - Track availability by date and time
+  - Generate role-based daily schedules
+  - Export schedules to Excel for operational use
+  - Manage authentication-protected routes
+  ## Features                                                                                                                                                                        
+  
+  - **Worker Management** — Create, update, and view workers
+  - **Availability Tracking** — Upload and manage worker availability
+  - **Schedule Export** — Export schedules to Excel (.xlsx)
+  - **Authentication** — Login-protected routes
+  - **Modern UI** — Clean modern interface built with Inter font
 
-## Features
+  ## Tech Stack
 
-- **Worker Management** — Create, update, and view workers
-- **Availability Tracking** — Upload and manage worker availability
-- **Schedule Export** — Export schedules to Excel (.xlsx)
-- **Authentication** — Login-protected routes
-- **Dark Navy UI** — Clean modern interface built with Inter font
+  **Frontend**
+  - React
+  - React Router
+  - Axios
+  - Bootstrap
 
-## Tech Stack
+  **Backend**
+  - Python / Flask
+  - Flask-SQLAlchemy
+  - Flask-CORS
+  - Gunicorn
+  - PostgreSQL (production) / SQLite (local dev)
 
-**Frontend**
-- React
-- React Router
-- Axios
-- Bootstrap
+  ## Getting Started
 
-**Backend**
-- Python / Flask
-- Flask-SQLAlchemy
-- Flask-CORS
-- Gunicorn
-- PostgreSQL (production) / SQLite (local dev)
+  ### Prerequisites
+  - Node.js
+  - Python 3.x
 
-## Getting Started
+  ### Backend
 
-### Prerequisites
-- Node.js
-- Python 3.x
+  \```bash
+  cd backend
+  python -m venv venv
+  source venv/bin/activate  # Windows: venv\Scripts\activate
+  pip install -r requirements.txt
+  \```
 
-### Backend
+  Create a `.env` file in `/backend`:
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-```
+  \```env
+  DATABASE_URI=sqlite:///local.db
+  FRONTEND_ORIGINS=http://localhost:3000
+  \```
 
-Create a `.env` file in `/backend`:
+  Run the server:
 
-```env
-DATABASE_URI=sqlite:///local.db
-FRONTEND_ORIGINS=http://localhost:3000
-```
+  \```bash
+  flask run
+  \```
 
-Run the server:
+  ### Frontend
 
-```bash
-flask run
-```
+  \```bash
+  cd frontend
+  npm install
+  npm start
+  \```
 
-### Frontend
+  App runs at `http://localhost:3000`
 
-```bash
-cd frontend
-npm install
-npm start
-```
+  ## Deployment
 
-App runs at `http://localhost:3000`
+  - Deployed on Render
+  - Served using Gunicorn
+  - Environment variables required:
 
-## Deployment
+  | Variable | Description |
+  |---|---|
+  | `DATABASE_URI` | PostgreSQL connection string |
+  | `FRONTEND_ORIGINS` | Comma-separated list of allowed frontend URLs |
 
-The backend is deployed on **Render** using Gunicorn (`Procfile` included). The frontend can be deployed to any static host (Netlify, Vercel, etc.).
-
-Set the following environment variables on Render:
-
-| Variable | Description |
-|---|---|
-| `DATABASE_URI` | PostgreSQL connection string |
-| `FRONTEND_ORIGINS` | Comma-separated list of allowed frontend URLs |
+  ### Architecture Overview
+  - RESTful API structure
+  - Separation of concerns (React frontend / Flask API)
+  - Role-based scheduling logic handled server-side
+  - Database abstraction via SQLAlchemy ORM
+  - CORS handling for cross-origin frontend communication
