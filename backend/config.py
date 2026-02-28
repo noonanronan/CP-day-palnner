@@ -2,7 +2,7 @@ import os
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-# Storage
+# File Storage
 UPLOAD_FOLDER = Path('uploaded_templates')
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 

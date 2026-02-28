@@ -7,13 +7,23 @@ const LoginPage = () => {
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (password === "CenterParcs") {
-            localStorage.setItem("isAuthenticated", "true");
-            navigate("/workers");
-        } else {
-            setError("Incorrect password. Try again.");
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ password }),
+            });
+            const data = await response.json();
+            if (data.success) {
+                localStorage.setItem("isAuthenticated", "true");
+                navigate("/workers");
+            } else {
+                setError("Incorrect password. Try again.");
+            }
+        } catch {
+            setError("Could not connect to server.");
         }
     };
 

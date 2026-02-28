@@ -4,7 +4,7 @@ from flask import Flask, request
 from flask_cors import CORS
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv() 
 
 app = Flask(__name__)
 
@@ -18,6 +18,7 @@ CORS(
     allow_headers=["Content-Type", "Authorization"],
 )
 
+# Flask decorator - Run this functuion after every request
 @app.after_request
 def add_cors_headers(resp):
     origin = request.headers.get("Origin")
@@ -45,9 +46,9 @@ if not os.getenv("DATABASE_URI", "").startswith("sqlite"):
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(levelname)s: %(message)s')
 
 from extensions import db
-db.init_app(app)
+db.init_app(app) # Connecting db to flask app
 
-# Register blueprints
+# Register blueprints - Importing all route modules
 from routes.auth import auth_bp
 from routes.files import files_bp
 from routes.availability import availability_bp

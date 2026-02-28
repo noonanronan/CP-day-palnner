@@ -5,7 +5,6 @@ from config import UPLOAD_FOLDER
 
 files_bp = Blueprint("files_bp", __name__)
 
-
 @files_bp.route('/upload-excel', methods=['POST'])
 def upload_excel():
     try:

@@ -6,7 +6,6 @@ from models import Worker
 
 workers_bp = Blueprint("workers_bp", __name__)
 
-
 @workers_bp.route("/workers", methods=["GET"])
 def get_all_workers():
     try:

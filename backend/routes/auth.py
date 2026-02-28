@@ -9,7 +9,7 @@ auth_bp = Blueprint("auth_bp", __name__)
 def login():
     data = request.get_json() or {}
     password = data.get("password", "")
-    expected = os.getenv("ADMIN_PASSWORD", "CenterParcs")
+    expected = os.getenv("ADMIN_PASSWORD")
     if compare_digest(password, expected):
         return jsonify({"success": True}), 200
     return jsonify({"success": False, "error": "Invalid password"}), 401
