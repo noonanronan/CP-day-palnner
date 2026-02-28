@@ -15,7 +15,7 @@ const Navbar = () => {
     if (location.pathname === "/") return null;
 
     return (
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
+        <nav className="navbar navbar-expand-lg navbar-dark">
             <div className="container-fluid d-flex justify-content-between">
                 <div className="d-flex">
                     <Link className="navbar-brand" to="/workers">Day Planner</Link>
